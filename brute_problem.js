@@ -34,7 +34,6 @@ function brute (maxLength = 5) {
 		var passwordCache = passwordFistState;
 
 		do {
-
 			if (login(passwordCache)) {
 				return passwordCache;
 			}
