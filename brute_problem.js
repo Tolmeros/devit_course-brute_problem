@@ -1,4 +1,4 @@
-const allowedChars = ['a', 'b', 'c', 'A', 'B', 'C'];
+const allowedChars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'A', 'B', 'C', 'D', 'E', 'F', 'G', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 const maxLength = 10;
 
 function login(password) {
