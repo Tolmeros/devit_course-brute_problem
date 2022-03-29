@@ -2,7 +2,7 @@ const allowedChars = ['a', 'b', 'c', 'A', 'B', 'C'];
 const maxLength = 10;
 
 function login(password) {
-	return password === "ACcA";
+	return password === "99Ac9";
 }
 
 function iterateArray(arrayOfSymbols) {
@@ -11,18 +11,16 @@ function iterateArray(arrayOfSymbols) {
 	var position = 0;
 	var carry = true;
 
-	while ((position < arrayNext.length) && carry) {
+	do {
 		var allowedCharsActualIndex = allowedChars.indexOf(arrayNext[position]);
-		
-		allowedCharsNextIndex = allowedCharsActualIndex + 1;
+		var allowedCharsNextIndex = allowedCharsActualIndex + 1;
 
 		carry = (allowedCharsNextIndex >= allowedChars.length);
 
-		var allowedCharsNextIndex = allowedCharsNextIndex % allowedChars.length;
-		arrayNext[position] = allowedChars[allowedCharsNextIndex];
+		arrayNext[position] = allowedChars[allowedCharsNextIndex % allowedChars.length];
 
 		position++;
-	}
+	} while ((position < arrayNext.length) && carry);
 
 	return arrayNext;
 }
