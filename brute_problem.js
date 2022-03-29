@@ -31,13 +31,16 @@ function brute (maxLength = 5) {
 	do {
 		passwordArray.push(allowedChars[0]);
 		const passwordFistState = passwordArray.join("");
+		var passwordCache = passwordFistState;
 
 		do {
-			if (login(passwordArray.join(""))) {
-				return passwordArray.join("");
+
+			if (login(passwordCache)) {
+				return passwordCache;
 			}
 			passwordArray = iterateArray(passwordArray);
-		} while (passwordArray.join("") !== passwordFistState);
+			passwordCache = passwordArray.join("");
+		} while (passwordCache !== passwordFistState);
 
 	} while (passwordArray.length < maxLength);
 
