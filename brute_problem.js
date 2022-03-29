@@ -1,22 +1,22 @@
 const allowedChars = ['a', 'b', 'c', 'A', 'B', 'C'];
 const maxLength = 10;
 
-function login(passwod) {
-	return passwod === "ACcA";
+function login(password) {
+	return password === "ACcA";
 }
 
 function iterateArray(arrayOfSymbols) {
 	var arrayNext = [...arrayOfSymbols];
 
 	var position = 0;
-	var overflow = true;
+	var carry = true;
 
-	while ((position < arrayNext.length) && overflow) {
+	while ((position < arrayNext.length) && carry) {
 		var allowedCharsActualIndex = allowedChars.indexOf(arrayNext[position]);
 		
 		allowedCharsNextIndex = allowedCharsActualIndex + 1;
 
-		overflow = (allowedCharsNextIndex >= allowedChars.length);
+		carry = (allowedCharsNextIndex >= allowedChars.length);
 
 		var allowedCharsNextIndex = allowedCharsNextIndex % allowedChars.length;
 		arrayNext[position] = allowedChars[allowedCharsNextIndex];
