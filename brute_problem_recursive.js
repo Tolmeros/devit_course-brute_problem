@@ -1,37 +1,39 @@
-//const allowedChars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'A', 'B', 'C', 'D', 'E', 'F', 'G', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-const allowedChars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'A', 'B', 'C'];
-const maxLength = 5;
+const allowedChars = [
+	'a', 'b', 'c', 'd', 'e', 'f', 'g',
+	'A', 'B', 'C', 'D', 'E', 'F', 'G',
+	'1', '2', '3', '4', '5', '6', '7',
+	'8', '9'
+];
+const maxLength = 10;
 
 function login(password) {
 	return password === "99Ac9";
 }
 
-function printAllKfromCharsSet(k, charsSetArray, stringState="") {
+function allKfromCharsSet(k, charsSetArray, checkFn, stringState="") {
 	if (k == 0) {
-		console.log(stringState);
-		return stringState;
+		return checkFn(stringState) ? stringState : null;
 	}
 
-	//let n = charsSetArray.length; //?
 	for (let i=0; i < charsSetArray.length; i++) {
 		let newStringState = stringState + charsSetArray[i];
-		printAllKfromCharsSet(k-1, charsSetArray, newStringState);
+		let result = allKfromCharsSet(k-1, charsSetArray, checkFn, newStringState);
+		if (result !== null) {
+			return result;
+		}
 	}
+
+	return null;
 }
 
 function brute (maxLength = 5) {
 	
 	for (let k = 1; k<=maxLength; k++) {
-	  printAllKfromCharsSet(k, allowedChars);
+		let result = allKfromCharsSet(k, allowedChars, login);
+		if (result !== null) {
+			return result;
+		}
 	}
-	
-
-	/*
-	if (login(passwordCache)) {
-		return passwordCache;
-	}
-	*/
-	
 
 	return null;
 }
