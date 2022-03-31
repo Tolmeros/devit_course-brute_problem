@@ -1,4 +1,9 @@
-const allowedChars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'A', 'B', 'C', 'D', 'E', 'F', 'G', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const allowedChars = [
+	'a', 'b', 'c', 'd', 'e', 'f', 'g',
+	'A', 'B', 'C', 'D', 'E', 'F', 'G',
+	'1', '2', '3', '4', '5', '6', '7',
+	'8', '9'
+];
 const maxLength = 10;
 
 function login(password) {
@@ -6,14 +11,14 @@ function login(password) {
 }
 
 function iterateArray(arrayOfSymbols) {
-	var arrayNext = [...arrayOfSymbols];
+	let arrayNext = [...arrayOfSymbols];
 
-	var position = 0;
-	var carry = true;
+	let position = 0;
+	let carry = true;
 
 	do {
-		var allowedCharsActualIndex = allowedChars.indexOf(arrayNext[position]);
-		var allowedCharsNextIndex = allowedCharsActualIndex + 1;
+		let allowedCharsActualIndex = allowedChars.indexOf(arrayNext[position]);
+		let allowedCharsNextIndex = allowedCharsActualIndex + 1;
 
 		carry = (allowedCharsNextIndex >= allowedChars.length);
 
@@ -26,11 +31,11 @@ function iterateArray(arrayOfSymbols) {
 }
 
 function* passwordGenerator(maxLength) {
-	var passwordArray = [];
+	let passwordArray = [];
 	do {
 		passwordArray.push(allowedChars[0]);
 		const passwordFistState = passwordArray.join("");
-		var passwordCache = passwordFistState;
+		let passwordCache = passwordFistState;
 
 		do {
 			yield passwordCache;
