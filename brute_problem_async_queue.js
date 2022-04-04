@@ -27,14 +27,14 @@ class TasksQueue {
   }
 
   addTask(taskArg, taskFunction = null) {
-    if (taskFunction !== null) {
+    if (taskFunction != null) {
       this.#tasksPending.push({
         fn: taskFunction,
         arg: taskArg
       });
       return true;
     }
-    if (this.#defaultFunction !== null) {
+    if (this.#defaultFunction != null) {
       this.#tasksPending.push({
         fn: this.#defaultFunction,
         arg: taskArg
@@ -158,7 +158,7 @@ function* passwordGenerator(maxLength) {
   } while (passwordArray.length < maxLength);
 }
 
-let pwdTasks = new TasksQueue(2, login);
+let pwdTasks = new TasksQueue(5, login);
 
 function testLogin(results) {
   if (results.result === true) {
