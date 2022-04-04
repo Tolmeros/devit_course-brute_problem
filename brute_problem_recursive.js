@@ -15,6 +15,12 @@ function allKfromCharsSet(k, charsSetArray, checkFn, stringState="") {
 		return checkFn(stringState) ? stringState : null;
 	}
 
+	/* Оптимизация. Не полную длину можно тоже проверять.
+	if (checkFn(stringState)) {
+		return stringState;
+	}
+	*/
+
 	for (let i=0; i < charsSetArray.length; i++) {
 		let newStringState = stringState + charsSetArray[i];
 		let result = allKfromCharsSet(k-1, charsSetArray, checkFn, newStringState);
