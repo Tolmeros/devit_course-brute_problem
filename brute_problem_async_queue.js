@@ -1,6 +1,5 @@
 
 class TasksQueue {
-  #tasksPending = [];
   #tasksRunning = [];
 
   #concurrency = 1;
@@ -14,9 +13,9 @@ class TasksQueue {
     this.#defaultFunction = defaultFunction;
   }
 
-  addTaskByArguments(tasksArg, run = false) {
-    for (let taskArg of tasksArg) {
-      if (!this.addTask(taskArg)) {
+  batchAddTasks(tasks, run = false) {
+    for (let task of tasks) {
+      if (!this.addTask(task.arg, task.fn, task.afn)) {
         return false;
       }
     }
@@ -24,24 +23,6 @@ class TasksQueue {
       this.run();
     }
     return true;
-  }
-
-  addTask(taskArg, taskFunction = null) {
-    if (taskFunction != null) {
-      this.#tasksPending.push({
-        fn: taskFunction,
-        arg: taskArg
-      });
-      return true;
-    }
-    if (this.#defaultFunction != null) {
-      this.#tasksPending.push({
-        fn: this.#defaultFunction,
-        arg: taskArg
-      });
-      return true;
-    }
-    return false;
   }
 
   run() {
@@ -67,7 +48,7 @@ class TasksQueue {
     return this.#concurrency;
   }
 
-  set analyzingFunction(fn) {
+  onAnalyzing(fn) {
     this.#analyzingFunction = fn;
   }
 
@@ -77,7 +58,7 @@ class TasksQueue {
     }
 
     while (this.#tasksRunning.length < this.#concurrency) {
-      const newTask = this.#tasksPending.shift();
+      const newTask = this.#tasksPending.shift(); // читаем из callback
       if (newTask === undefined) {
         return false;
       }
@@ -171,11 +152,11 @@ function testLogin(results) {
   return null;
 }
 
-pwdTasks.analyzingFunction = testLogin;
+pwdTasks.onAnalyzing(testLogin);
 
-passwords = Array.from(passwordGenerator(5));
+//passwords = Array.from(passwordGenerator(5));
 
 //console.log(passwords);
 
-pwdTasks.addTaskByArguments(passwords, true);
+//pwdTasks.addTaskByArguments(passwords, true);
 //pwdTasks.run();
