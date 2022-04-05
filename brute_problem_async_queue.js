@@ -3,28 +3,13 @@ class TasksQueue {
   #tasksRunning = [];
 
   #concurrency = 1;
-  #defaultFunction = null;
-  #analyzingFunction = null;
   #loadFunction = null;
 
   #stoped = true;
 
-  constructor(loadFunction, concurrency = 1, defaultFunction = null) {
+  constructor(loadFunction, concurrency = 1) {
     this.#concurrency = concurrency;
-    this.#defaultFunction = defaultFunction;
     this.#loadFunction = loadFunction;
-  }
-
-  batchAddTasks(tasks, run = false) {
-    for (let task of tasks) {
-      if (!this.addTask(task.arg, task.fn, task.afn)) {
-        return false;
-      }
-    }
-    if (run === true) {
-      this.run();
-    }
-    return true;
   }
 
   run() {
@@ -45,17 +30,13 @@ class TasksQueue {
     return this.#concurrency;
   }
 
-  onAnalyzing(fn) {
-    this.#analyzingFunction = fn;
-  }
-
   #runTasks() {
     if (this.#stoped) {
       return false;
     }
 
     while (this.#tasksRunning.length < this.#concurrency) {
-      const newTask = this.#loadFunction(); // читаем из callback
+      const newTask = this.#loadFunction();
       if (newTask == null) {
         this.stop();
         return false;
@@ -63,9 +44,9 @@ class TasksQueue {
 
       const newTaskPromise = newTask.fn(newTask.arg);
 
-      //newTaskPromise.then((result) => {this.#analyzingFunction({result: result, arg: newTask.arg})});
-      newTaskPromise.then((result) => {newTask.afn({result: result, arg: newTask.arg})});
-
+      newTaskPromise.then((result) => {
+        newTask.afn({result: result, arg: newTask.arg})
+      });
     }
     return true;
   }
@@ -82,13 +63,6 @@ async function login(password) {
     return true;
   }
   return false;
-}
-
-function resultsCallback(results) {
-  console.log('resultsCallback: ');
-  for(let result of results) {
-    console.log(result);
-  }
 }
 
 function* passwordGenerator(maxLength) {
@@ -161,13 +135,4 @@ function testLogin(results) {
   return null;
 }
 
-pwdTasks.onAnalyzing(testLogin);
-
-//passwords = Array.from(passwordGenerator(5));
-
-
-
-//console.log(passwords);
-
-//pwdTasks.addTaskByArguments(passwords, true);
 pwdTasks.run();
