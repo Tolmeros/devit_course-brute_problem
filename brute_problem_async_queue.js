@@ -34,11 +34,12 @@ class TasksQueue {
     if (this.#stoped) {
       return false;
     }
-
+    let addedTasks = 0;
     while (this.#tasksRunning.length < this.#concurrency) {
       const newTask = this.#loadFunction();
       if (newTask == null) {
         this.stop();
+        console.log('runTasks addedTasks: '+addedTasks);
         return false;
       }
 
@@ -47,7 +48,11 @@ class TasksQueue {
       newTaskPromise.then((result) => {
         newTask.afn({result: result, arg: newTask.arg})
       });
+
+      this.#tasksRunning.push(newTaskPromise);
+      addedTasks++;
     }
+    console.log('runTasks addedTasks: '+addedTasks);
     return true;
   }
 }
