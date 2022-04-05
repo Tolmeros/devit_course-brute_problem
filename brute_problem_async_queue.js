@@ -5,12 +5,14 @@ class TasksQueue {
   #concurrency = 1;
   #defaultFunction = null;
   #analyzingFunction = null;
+  #loadFunction = null;
 
   #stoped = true;
 
-  constructor(concurrency = 1, defaultFunction = null) {
+  constructor(loadFunction, concurrency = 1, defaultFunction = null) {
     this.#concurrency = concurrency;
     this.#defaultFunction = defaultFunction;
+    this.#loadFunction = loadFunction;
   }
 
   batchAddTasks(tasks, run = false) {
@@ -32,12 +34,7 @@ class TasksQueue {
 
   handleNextPendingTasks() {
     this.#tasksRunning.shift();
-    if ((this.#tasksPending.length == 0) && (this.#tasksRunning.length == 0)) {
-      this.stop();
-      return false;
-    } else {
-      return this.#runTasks();
-    }
+    return this.#runTasks();
   }
 
   stop () {
@@ -58,14 +55,16 @@ class TasksQueue {
     }
 
     while (this.#tasksRunning.length < this.#concurrency) {
-      const newTask = this.#tasksPending.shift(); // читаем из callback
-      if (newTask === undefined) {
+      const newTask = this.#loadFunction(); // читаем из callback
+      if (newTask == null) {
+        this.stop();
         return false;
       }
 
       const newTaskPromise = newTask.fn(newTask.arg);
 
-      newTaskPromise.then((result) => {this.#analyzingFunction({result: result, arg: newTask.arg})});
+      //newTaskPromise.then((result) => {this.#analyzingFunction({result: result, arg: newTask.arg})});
+      newTaskPromise.then((result) => {newTask.afn({result: result, arg: newTask.arg})});
 
     }
     return true;
@@ -139,7 +138,17 @@ function* passwordGenerator(maxLength) {
   } while (passwordArray.length < maxLength);
 }
 
-let pwdTasks = new TasksQueue(5, login);
+let passwords = passwordGenerator(5);
+
+function taskLoading() {
+  let password = passwords.next();
+  if (password.done) {
+    return null;
+  }
+  return {fn: login, afn: testLogin, arg: password.value};
+}
+
+let pwdTasks = new TasksQueue(taskLoading, 5, login);
 
 function testLogin(results) {
   if (results.result === true) {
@@ -156,7 +165,9 @@ pwdTasks.onAnalyzing(testLogin);
 
 //passwords = Array.from(passwordGenerator(5));
 
+
+
 //console.log(passwords);
 
 //pwdTasks.addTaskByArguments(passwords, true);
-//pwdTasks.run();
+pwdTasks.run();
