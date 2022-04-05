@@ -1,11 +1,10 @@
 
 class TasksQueue {
-  #tasksRunning = [];
-
   #concurrency = 1;
   #loadFunction = null;
 
   #stoped = true;
+  #tasksRunningCounter = 0;
 
   constructor(loadFunction, concurrency = 1) {
     this.#concurrency = concurrency;
@@ -18,7 +17,7 @@ class TasksQueue {
   }
 
   handleNextPendingTasks() {
-    this.#tasksRunning.shift();
+    this.#tasksRunningCounter--;
     return this.#runTasks();
   }
 
@@ -35,7 +34,7 @@ class TasksQueue {
       return false;
     }
     let addedTasks = 0;
-    while (this.#tasksRunning.length < this.#concurrency) {
+    while (this.#tasksRunningCounter < this.#concurrency) {
       const newTask = this.#loadFunction();
       if (newTask == null) {
         this.stop();
@@ -49,7 +48,7 @@ class TasksQueue {
         newTask.afn({result: result, arg: newTask.arg})
       });
 
-      this.#tasksRunning.push(newTaskPromise);
+      this.#tasksRunningCounter++;
       addedTasks++;
     }
     console.log('runTasks addedTasks: '+addedTasks);
